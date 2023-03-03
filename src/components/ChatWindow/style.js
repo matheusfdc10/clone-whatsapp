@@ -62,6 +62,7 @@ export const ChatWindowStyle = Styled.div`
         background-position: center;
         background-image: url('');
         /* 1:50:00 */
+        padding: 20px 30px;
     }
 
     .emoji-area {

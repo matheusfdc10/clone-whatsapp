@@ -9,6 +9,8 @@ import { MdDonutLarge } from 'react-icons/md'
 import { BsFillChatLeftTextFill } from 'react-icons/bs'
 import { FiMoreVertical } from 'react-icons/fi'
 import { BiSearchAlt2 } from 'react-icons/bi'
+import NewChat from "./components/NewChat";
+import Login from "./components/Login";
 
 const teste = [
   {
@@ -36,17 +38,39 @@ const teste = [
 function App() {
   const [chatList, setChatList] = useState(teste)
   const [activeChat, setActiveChat] = useState({})
+  const [user, setUser] = useState(null)
+  const [showNewChat, setShowNewChat] = useState(false);
+
+  const handleLoginData = async (u) => {
+    let newUser = {
+      id: u.uid,
+      name: u.displayName,
+      avatar: u.photURL
+    }
+
+    setUser(newUser)
+  }
+
+  if(!user){
+    return <Login onReceive={handleLoginData} />
+  }
 
   return (
     <AppWindowStyle>
+      <NewChat
+        chatList={chatList}
+        user={user}
+        show={showNewChat} 
+        setShow={setShowNewChat}
+      />
       <div className="sidebar">
         <header>
-          <img className="header-avatar" src="https://thumbs.dreamstime.com/b/do-retrato-masculino-do-avatar-do-%C3%ADcone-do-perfil-pessoa-ocasional-58249394.jpg" alt="" />
+          <img className="header-avatar" src={user.avatar} alt="" />
           <div className="header-buttons">
             <div className="header-btn">
               <MdDonutLarge />
             </div>
-            <div className="header-btn">
+            <div onClick={() => setShowNewChat(true)} className="header-btn">
               <BsFillChatLeftTextFill />
             </div>
             <div className="header-btn">
@@ -79,7 +103,7 @@ function App() {
       <div className="contentArea">
         {
           activeChat.chatId ?
-            <ChatWindow />
+            <ChatWindow user={user} />
             :
             <ChatIntro />
         }

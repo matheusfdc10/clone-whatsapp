@@ -1,15 +1,30 @@
 import { ChatWindowStyle } from "./style";
+import { useEffect, useState, useRef } from "react";
 import EmojiPicker from 'emoji-picker-react';
-import { useState } from "react";
+import MessageItem from "../MessageItem";
 
 import { BiSearchAlt2 } from 'react-icons/bi'
 import { IoMdAttach, IoMdClose, IoMdSend } from 'react-icons/io'
 import { FiMoreVertical } from 'react-icons/fi'
 import { BsEmojiLaughing, BsMicFill } from 'react-icons/bs'
 
-const ChatWindow = () => {
+const ChatWindow = ({user}) => {
+    let recognition = null;
+    let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if(SpeechRecognition) {
+        recognition = new SpeechRecognition();
+    }
     const [emojiOpen, setEmojiOpen] = useState(false)
     const [text, setText] = useState('')
+    const [listening, setListening] = useState(false)
+    const [list, setList] = useState([{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'}])
+    const body = useRef()
+
+    useEffect(() => {
+        if(body.current.scrollHeight > body.current.offsetHeight) {
+            body.current.scrollTop = body.current.scrollHeight - body.current.offsetHeight
+        }
+    }, [list])
 
     const handleEmojiClick = (e, emojiObject) => {
         setText(text + e.emoji)
@@ -21,6 +36,26 @@ const ChatWindow = () => {
 
     const handleCloseEmoji = () => {
         setEmojiOpen(false)
+    }
+
+    const handleMicClick = () => {
+        if(recognition){
+            recognition.onstart = () => {
+                setListening(true)
+            }
+            recognition.onend = () => {
+                setListening(false)
+            }
+            recognition.onresult = (e) => {
+                setText(e.results[0][0].transcript)
+            }
+
+            recognition.start()
+        }
+    }
+
+    const handleSendClick = () => {
+
     }
 
     return (
@@ -39,8 +74,19 @@ const ChatWindow = () => {
                     </div>
                 </div>
             </div>
-            <div className="body">
-            
+            <div 
+                className="body"
+                ref={body}
+            >
+                {list.map((item, key) => {
+                    return(
+                        <MessageItem 
+                            key={key}
+                            data={item}
+                            user={user}
+                        />
+                    )
+                })}
             </div>
             <div 
                 className="emoji-area"
@@ -80,12 +126,18 @@ const ChatWindow = () => {
                 </div>
                 <div className="pos">
                     {text ? 
-                        <div className="btn">
+                        <div 
+                            className="btn"
+                            onClick={handleSendClick}
+                        >
                             <IoMdSend />
                         </div>
                     :
-                        <div className="btn">
-                            <BsMicFill />
+                        <div
+                            onClick={handleMicClick}
+                            className="btn"
+                        >
+                            <BsMicFill  style={{color: !listening || '#126ECE'}} />
                         </div>
                     }
                 </div>
