@@ -90,14 +90,17 @@ export default {
         })
     },
 
-    onChatContent: (chatId, setList, setUsers) => {
-        return db.collection('chats').doc(chatId).onSnapshot((doc) => {
+    onChatContent: (chatId, setList, setUsers, setLoading) => {
+        setLoading(true)
+        db.collection('chats').doc(chatId).onSnapshot((doc) => {
             if(doc.exists) {
                 const data = doc.data()
                 setList(data.messages)
                 setUsers(data.users)
             }
+            setLoading(false)
         })
+        return true
     },
 
     sendMessage: async (chatData, userId, type, body, users) => {

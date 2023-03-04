@@ -20,7 +20,7 @@ function App() {
   const [activeChat, setActiveChat] = useState({})
   const [user, setUser] = useState(null)
   const [showNewChat, setShowNewChat] = useState(false);
-
+  
   useEffect(() => {
     if(user) {
       let unsub = api.onChatList(user.id, setChatList)

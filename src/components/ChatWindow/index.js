@@ -19,13 +19,14 @@ const ChatWindow = ({user, data}) => {
     const [text, setText] = useState('')
     const [listening, setListening] = useState(false)
     const [list, setList] = useState([])
+    const [loading, setLoading] = useState(true)
     const [users, setUsers] = useState([])
     const body = useRef()
 
     useEffect(() => {
         setList([])
-        const unsub = api.onChatContent(data.chatId, setList, setUsers)
-        return unsub
+        setLoading(true)
+        api.onChatContent(data.chatId, setList, setUsers, setLoading)
     }, [data.chatId])
 
     useEffect(() => {
@@ -70,6 +71,7 @@ const ChatWindow = ({user, data}) => {
     }
 
     const handleSendClick = () => {
+        if(loading) return
         if(text) {
             api.sendMessage(data, user.id, 'text', text, users)
             setText('');
@@ -142,6 +144,7 @@ const ChatWindow = ({user, data}) => {
                         onChange={e => setText(e.target.value)}
                         value={text}
                         onKeyUp={handleInputKeyUp}
+                        disabled={loading}
                     />
                 </div>
                 <div className="pos">
