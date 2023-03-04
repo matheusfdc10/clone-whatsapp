@@ -35,9 +35,6 @@ const NewChat = ({user, chatList, show, setShow}) => {
                         if(chatList[i].width === item.id) {
                             return 
                         }
-                        if(chatList[i].width){
-                            return item
-                        }
                     }
                     return item
                 }).map((item, key) => {

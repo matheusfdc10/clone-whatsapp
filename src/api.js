@@ -63,6 +63,7 @@ export default {
         })
     },
 
+    //pegar e ordernar lista de chats
     onChatList: (userId, setChatList) => {
         return db.collection('users').doc(userId).onSnapshot((doc) => {
             if(doc.exists) {
