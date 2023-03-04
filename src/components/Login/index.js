@@ -6,7 +6,7 @@ const Login = ({onReceive}) => {
     const handleFacebookLogin = async () => {
         let result = await api.fbPopup();
         if(result) {
-            onReceive(result.user)
+            onReceive(result.user._delegate)
         } else {
             alert('ERRO!')
         }

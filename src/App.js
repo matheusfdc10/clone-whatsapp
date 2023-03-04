@@ -1,9 +1,11 @@
 import { AppWindowStyle } from "./AppStyle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ChatListItem from "./components/ChatListItem";
 import ChatIntro from "./components/ChatIntro";
 import ChatWindow from "./components/ChatWindow";
+
+import api from  './api.js'
 
 import { MdDonutLarge } from 'react-icons/md'
 import { BsFillChatLeftTextFill } from 'react-icons/bs'
@@ -12,42 +14,28 @@ import { BiSearchAlt2 } from 'react-icons/bi'
 import NewChat from "./components/NewChat";
 import Login from "./components/Login";
 
-const teste = [
-  {
-    chatId: 1,
-    title: 'fulano de tal',
-    image: 'https://thumbs.dreamstime.com/b/do-retrato-masculino-do-avatar-do-%C3%ADcone-do-perfil-pessoa-ocasional-58249394.jpg'
-  },
-  {
-    chatId: 2,
-    title: 'fulano de tal',
-    image: 'https://thumbs.dreamstime.com/b/do-retrato-masculino-do-avatar-do-%C3%ADcone-do-perfil-pessoa-ocasional-58249394.jpg'
-  },
-  {
-    chatId: 3,
-    title: 'fulano de tal',
-    image: 'https://thumbs.dreamstime.com/b/do-retrato-masculino-do-avatar-do-%C3%ADcone-do-perfil-pessoa-ocasional-58249394.jpg'
-  },
-  {
-    chatId: 4,
-    title: 'fulano de tal',
-    image: 'https://thumbs.dreamstime.com/b/do-retrato-masculino-do-avatar-do-%C3%ADcone-do-perfil-pessoa-ocasional-58249394.jpg'
-  }
-]
 
 function App() {
-  const [chatList, setChatList] = useState(teste)
+  const [chatList, setChatList] = useState([])
   const [activeChat, setActiveChat] = useState({})
   const [user, setUser] = useState(null)
   const [showNewChat, setShowNewChat] = useState(false);
+
+  useEffect(() => {
+    if(user) {
+      let unsub = api.onChatList(user.id, setChatList)
+      return unsub
+    }
+  }, [user])
 
   const handleLoginData = async (u) => {
     let newUser = {
       id: u.uid,
       name: u.displayName,
-      avatar: u.photURL
+      avatar: u.photoURL
     }
-
+    await api.addUser(newUser)
+    
     setUser(newUser)
   }
 
@@ -65,7 +53,7 @@ function App() {
       />
       <div className="sidebar">
         <header>
-          <img className="header-avatar" src={user.avatar} alt="" />
+          <img className="header-avatar" src={user.avatar} alt="avatar" />
           <div className="header-buttons">
             <div className="header-btn">
               <MdDonutLarge />
@@ -103,7 +91,10 @@ function App() {
       <div className="contentArea">
         {
           activeChat.chatId ?
-            <ChatWindow user={user} />
+            <ChatWindow 
+              user={user}
+              data={activeChat}
+            />
             :
             <ChatIntro />
         }

@@ -1,3 +1,4 @@
+import { formatDate } from "../../utils/formatDate";
 import { ChatListItemStyle } from "./style";
 
 const ChatListItem = ({active, data, ...props}) => {
@@ -6,15 +7,15 @@ const ChatListItem = ({active, data, ...props}) => {
             style={active ? {backgroundColor: '#EBEBEB'} : {}} 
             {...props}
         >
-            <img className="avatar" src={data.image} alt=""/>
+            <img className="avatar" src={data.image} alt="avatar"/>
             <div className="lines">
                 <div className="line">
                     <div className="name">{data.title}</div>
-                    <div className="date">19:00</div>
+                    <div className="date">{formatDate(data.lastMessageDate)}</div>
                 </div>
                 <div className="line">
                     <div className="lastMsg">
-                        <p>Opa, tudo bem?Opa, tudo bem?Opa, tudo bem?Opa, tudo bem?Opa, tudo bem?</p>
+                        <p>{data.lastMessage}</p>
                     </div>
                 </div>
             </div>

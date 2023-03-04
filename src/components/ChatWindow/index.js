@@ -7,8 +7,9 @@ import { BiSearchAlt2 } from 'react-icons/bi'
 import { IoMdAttach, IoMdClose, IoMdSend } from 'react-icons/io'
 import { FiMoreVertical } from 'react-icons/fi'
 import { BsEmojiLaughing, BsMicFill } from 'react-icons/bs'
+import api from "../../api";
 
-const ChatWindow = ({user}) => {
+const ChatWindow = ({user, data}) => {
     let recognition = null;
     let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if(SpeechRecognition) {
@@ -17,8 +18,15 @@ const ChatWindow = ({user}) => {
     const [emojiOpen, setEmojiOpen] = useState(false)
     const [text, setText] = useState('')
     const [listening, setListening] = useState(false)
-    const [list, setList] = useState([{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'},{author: 123, body: 'blablabla'}, {author: 1234,body: 'blablabla'}, {author: 123,body: 'blablabla'}])
+    const [list, setList] = useState([])
+    const [users, setUsers] = useState([])
     const body = useRef()
+
+    useEffect(() => {
+        setList([])
+        const unsub = api.onChatContent(data.chatId, setList, setUsers)
+        return unsub
+    }, [data.chatId])
 
     useEffect(() => {
         if(body.current.scrollHeight > body.current.offsetHeight) {
@@ -54,16 +62,27 @@ const ChatWindow = ({user}) => {
         }
     }
 
-    const handleSendClick = () => {
+    const handleInputKeyUp = (e) => {
+        // verifica se a pessoa deu enter no teclado
+        if(e.keyCode == 13) {
+            handleSendClick()
+        }
+    }
 
+    const handleSendClick = () => {
+        if(text) {
+            api.sendMessage(data, user.id, 'text', text, users)
+            setText('');
+            setEmojiOpen(false)
+        }
     }
 
     return (
         <ChatWindowStyle>
             <div className="header">
                 <div className="header-info">
-                    <img className="avatar" src="https://thumbs.dreamstime.com/b/do-retrato-masculino-do-avatar-do-%C3%ADcone-do-perfil-pessoa-ocasional-58249394.jpg" alt=""/>
-                    <div className="name">matheus freitas</div>
+                    <img className="avatar" src={data.image} alt="avatar"/>
+                    <div className="name">{data.title}</div>
                 </div>
                 <div className="header-buttons">
                     <div className="btn">
@@ -122,6 +141,7 @@ const ChatWindow = ({user}) => {
                         placeholder="Digite uma mensagem"
                         onChange={e => setText(e.target.value)}
                         value={text}
+                        onKeyUp={handleInputKeyUp}
                     />
                 </div>
                 <div className="pos">
