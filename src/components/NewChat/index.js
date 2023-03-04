@@ -5,20 +5,12 @@ import api from "../../api";
 
 const NewChat = ({user, chatList, show, setShow}) => {
     const [list, setList] = useState([])
-        
+    
     useEffect(() => {
         const getList = async () => {
             if(user) {
-                let list = []
                 let results = await api.getContactList(user.id)
-                chatList.forEach(item => {
-                    for(let i in results){
-                        if(results[i].id !== item.width){
-                            list.push(results[i])
-                        }
-                    }
-                })
-                setList(list)
+                setList(results)
             }
         }
         getList()
@@ -38,7 +30,17 @@ const NewChat = ({user, chatList, show, setShow}) => {
                 <div className="head-title">Nova Conversa</div>
             </div>
             <div className="list">
-                {list.map((item, key) => {
+                {list.filter(item => {
+                    for(let i in chatList) {
+                        if(chatList[i].width === item.id) {
+                            return 
+                        }
+                        if(chatList[i].width){
+                            return item
+                        }
+                    }
+                    return item
+                }).map((item, key) => {
                     return (
                         <div 
                             key={key}
