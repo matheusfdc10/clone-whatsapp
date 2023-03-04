@@ -3,7 +3,7 @@ import api from '../../api.js'
 
 const Login = ({onReceive}) => {
 
-    const handleFacebookLogin = async () => {
+    const handleGoogleLogin = async () => {
         let result = await api.fbPopup();
         if(result) {
             onReceive(result.user._delegate)
@@ -14,7 +14,7 @@ const Login = ({onReceive}) => {
 
     return (
         <LoginStyle>
-            <button onClick={handleFacebookLogin}>Logar com Facebook</button>
+            <button onClick={handleGoogleLogin}>Logar com Google</button>
         </LoginStyle>
     )
 }

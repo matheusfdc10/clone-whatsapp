@@ -15,7 +15,7 @@ const MessageItem = ({data, user, ...props}) => {
                     backgroundColor: user.id === data.author ? '#d9fdd3' : null
                 }}
             >
-                <div className="text">{data.body}</div>
+                <p className="text">{data.body}</p>
                 <div className="date">{formatDate(data.date)}</div>
             </div>
         </MessageLineStyle>

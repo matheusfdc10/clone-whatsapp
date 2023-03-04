@@ -16,6 +16,7 @@ export const MessageLineStyle = Styled.div`
         .text {
             font-size: 14px;
             margin: 5px 40px 5px 5px;
+            word-wrap:  break-word;
         }
 
         .date {
