@@ -1,4 +1,4 @@
-import { formatDate } from "../../utils/formatDate";
+import { formatDateMessage } from "../../utils/formatDate";
 import { MessageLineStyle } from "./style";
 
 const MessageItem = ({data, user, ...props}) => {
@@ -16,7 +16,7 @@ const MessageItem = ({data, user, ...props}) => {
                 }}
             >
                 <p className="text">{data.body}</p>
-                <div className="date">{formatDate(data.date)}</div>
+                <div className="date">{formatDateMessage(data.date)}</div>
             </div>
         </MessageLineStyle>
     )
