@@ -5,4 +5,9 @@ export const LoginStyle = Styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
+
+    > button {
+        font-size: 24px;
+        padding: 4px;
+    }
 `
